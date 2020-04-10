@@ -16,7 +16,7 @@ defmodule Pokerly.Fixtures do
       @straight_flush [
         %{"color" => "♣", "rank" => "8"},
         %{"color" => "♣", "rank" => "9"},
-        %{"color" => "♣", "rank" => "Jack"},
+        %{"color" => "♣", "rank" => "J"},
         %{"color" => "♣", "rank" => "7"},
         %{"color" => "♣", "rank" => "10"}
       ]
@@ -62,7 +62,7 @@ defmodule Pokerly.Fixtures do
       ]
 
       @flush [
-        %{"color" => "♦", "rank" => "Jack"},
+        %{"color" => "♦", "rank" => "J"},
         %{"color" => "♦", "rank" => "9"},
         %{"color" => "♦", "rank" => "8"},
         %{"color" => "♦", "rank" => "4"},
@@ -72,7 +72,7 @@ defmodule Pokerly.Fixtures do
       @straight [
         %{"color" => "♣", "rank" => "8"},
         %{"color" => "♦", "rank" => "9"},
-        %{"color" => "♦", "rank" => "Jack"},
+        %{"color" => "♦", "rank" => "J"},
         %{"color" => "♣", "rank" => "7"},
         %{"color" => "♠", "rank" => "10"}
       ]
@@ -114,7 +114,7 @@ defmodule Pokerly.Fixtures do
         %{"color" => "♦", "rank" => "4"},
         %{"color" => "♠", "rank" => "3"},
         %{"color" => "♣", "rank" => "3"},
-        %{"color" => "♠", "rank" => "Jack"}
+        %{"color" => "♠", "rank" => "J"}
       ]
 
       @lesser_two_pair [
@@ -167,7 +167,7 @@ defmodule Pokerly.Fixtures do
 
       @high_card [
         %{"color" => "♦", "rank" => "4"},
-        %{"color" => "♠", "rank" => "Queen"},
+        %{"color" => "♠", "rank" => "Q"},
         %{"color" => "♦", "rank" => "3"},
         %{"color" => "♣", "rank" => "8"},
         %{"color" => "♣", "rank" => "7"}
