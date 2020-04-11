@@ -35,7 +35,8 @@ defmodule Pokerly.Deck do
   end
 
   def shuffle() do
-    Enum.flat_map(colors(), fn x ->
+    colors()
+    |> Enum.flat_map(fn x ->
       Enum.map(ranks(), fn y ->
         %{"color" => x, "rank" => y}
       end)
