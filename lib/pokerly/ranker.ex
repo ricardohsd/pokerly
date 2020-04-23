@@ -1,4 +1,6 @@
 defmodule Pokerly.Ranker do
+  alias Pokerly.Card
+  
   @hands %{
     straight_flush: 9,
     four_of_a_kind: 8,
@@ -166,7 +168,7 @@ defmodule Pokerly.Ranker do
     |> Enum.sort_by(fn {r, _c} -> r end)
   end
 
-  defp hand_weight(%{"color" => color, "rank" => rank}) do
+  defp hand_weight(%Card{color: color, rank: rank}) do
     {Pokerly.Deck.rank_of(rank), color}
   end
 end
