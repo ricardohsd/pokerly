@@ -7,8 +7,11 @@ defmodule Pokerly.Player do
   @max_amount_of_cards 3
   @statuses [:joining, :playing, :away, :quit]
 
+  # ensure global name is normalized
+  def via_tuple(name), do: {:via, Registry, {Registry.Player, name |> Base.encode64()}}
+
   def start_link(name) when is_binary(name) do
-    GenServer.start_link(__MODULE__, name, [])
+    GenServer.start_link(__MODULE__, name, name: via_tuple(name))
   end
 
   def init(name) do

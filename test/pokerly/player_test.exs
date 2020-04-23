@@ -14,7 +14,7 @@ defmodule Pokerly.PlayerTest do
 
   describe "init/1" do
     setup do
-      {:ok, pid} = Player.start_link("JohnDoe")
+      {:ok, pid} = Player.start_link("Mary")
 
       {:ok, process: pid}
     end
