@@ -5,12 +5,7 @@ defmodule Pokerly.Player do
 
   @initial_balance 200
   @max_amount_of_cards 3
-  @status %{
-    joining: 0,
-    playing: 1,
-    away: 2,
-    quit: 3
-  }
+  @statuses [:joining, :playing, :away, :quit]
 
   def start_link(name) when is_binary(name) do
     GenServer.start_link(__MODULE__, name, [])
@@ -24,7 +19,10 @@ defmodule Pokerly.Player do
     GenServer.call(pid, :balance)
   end
 
-  # TODO: Player should be allowed to play only when status move from joining to playing
+  def status(pid, status) do
+    GenServer.call(pid, {:status, status})
+  end
+
   def bet(pid, value) when is_number(value) do
     GenServer.call(pid, {:bet, value})
   end
@@ -43,7 +41,15 @@ defmodule Pokerly.Player do
     {:reply, state, state}
   end
 
-  def handle_call({:bet, value}, _from, state) do
+  def handle_call({:status, new_status}, _from, state) when new_status in @statuses do
+    {:reply, :ok, %{state | status: new_status}}
+  end
+
+  def handle_call({:status, new_status}, _from, state) do
+    {:reply, {:invalid_status, new_status}, state}
+  end
+
+  def handle_call({:bet, value}, _from, %{status: status} = state) when status == :playing do
     {:ok, balance} = Map.fetch(state, :balance)
     new_balance = balance - value
 
@@ -56,12 +62,22 @@ defmodule Pokerly.Player do
     end
   end
 
-  def handle_call({:receive_card, card}, _from, state) do
+  def handle_call({:bet, value}, _from, %{status: status} = state) when status != :playing do
+    {:reply, {:invalid_status, status}, state}
+  end
+
+  def handle_call({:receive_card, card}, _from, %{status: status} = state)
+      when status == :playing do
     with :ok <- can_receive_cards(state) do
       {:reply, :ok, %{state | cards: state[:cards] ++ [card]}}
     else
       :error -> {:reply, :invalid_amount_of_cards, state}
     end
+  end
+
+  def handle_call({:receive_card, card}, _from, %{status: status} = state)
+      when status != :playing do
+    {:reply, {:invalid_status, status}, state}
   end
 
   defp can_receive_cards(state) do
