@@ -32,6 +32,18 @@ defmodule Pokerly.PlayerTest do
     end
   end
 
+  describe "exists?/1" do
+    test "returns pid when player already exists" do
+      [{pid, nil}] = Player.exists?("JohnDoe")
+
+      assert Process.alive?(pid)
+    end
+
+    test "returns nothing when player doesn't exists" do
+      assert [] == Player.exists?("Mark")
+    end
+  end
+
   describe "status/1" do
     test "accepts :joining as a valid status", %{process: pid} do
       assert :ok == Player.status(pid, :joining)

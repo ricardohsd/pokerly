@@ -14,6 +14,10 @@ defmodule Pokerly.Player do
     GenServer.start_link(__MODULE__, name, name: via_tuple(name))
   end
 
+  def exists?(name) do
+    Registry.lookup(Registry.Player, name |> Base.encode64())
+  end
+
   def init(name) do
     {:ok, %{name: name, status: :joining, balance: @initial_balance, cards: []}}
   end
