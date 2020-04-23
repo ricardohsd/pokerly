@@ -1,6 +1,6 @@
 defmodule Pokerly.Ranker do
   alias Pokerly.Card
-  
+
   @hands %{
     straight_flush: 9,
     four_of_a_kind: 8,

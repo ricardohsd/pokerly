@@ -1,3 +1,3 @@
 defmodule Pokerly.Card do
-    defstruct [:color, :rank]
+  defstruct [:color, :rank]
 end
