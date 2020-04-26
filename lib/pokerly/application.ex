@@ -11,7 +11,8 @@ defmodule Pokerly.Application do
       # {Pokerly.Worker, arg}
       {Registry, keys: :unique, name: Registry.Game},
       {Registry, keys: :unique, name: Registry.Player},
-      Pokerly.GameSupervisor
+      Pokerly.GameSupervisor,
+      Pokerly.PlayerSupervisor
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

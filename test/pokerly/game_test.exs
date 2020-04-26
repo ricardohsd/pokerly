@@ -3,6 +3,7 @@ defmodule Pokerly.GameTest do
   doctest Pokerly.Game
 
   alias Pokerly.Game
+  alias Pokerly.Player
 
   setup do
     name = "Game1"
@@ -21,20 +22,23 @@ defmodule Pokerly.GameTest do
 
   describe "add_player/2" do
     test "adds a player to the game state", %{name: game} do
+      assert [] == Player.exists?("Martin")
+
       players = Game.players(game)
       assert [] == players
 
-      Game.add_player(game, "John")
+      Game.add_player(game, "Martin")
+      assert ["Martin"] == Game.players(game)
 
-      assert ["John"] == Game.players(game)
+      assert nil != Player.exists?("Martin")
     end
 
     test "doesn't add already existing player", %{name: game} do
-      Game.add_player(game, "John")
-      Game.add_player(game, "Mary")
-      Game.add_player(game, "John")
+      Game.add_player(game, "Robert")
+      Game.add_player(game, "Elise")
+      Game.add_player(game, "Robert")
 
-      assert ["John", "Mary"] == Game.players(game)
+      assert ["Robert", "Elise"] == Game.players(game)
     end
   end
 end

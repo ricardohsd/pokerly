@@ -18,16 +18,16 @@ defmodule Pokerly.Player do
     |> GenServer.whereis()
   end
 
-  def start_link([name: name] = _opts) when is_binary(name) do
-    GenServer.start_link(__MODULE__, name, name: via_tuple(name))
+  def start_link([name: name, game: _game] = opts) when is_binary(name) do
+    GenServer.start_link(__MODULE__, opts, name: via_tuple(name))
   end
 
   def exists?(name) do
     Registry.lookup(Registry.Player, encode(name))
   end
 
-  def init(name) do
-    {:ok, %{name: name, status: :joining, balance: @initial_balance, cards: []}}
+  def init([name: name, game: game] = _opts) do
+    {:ok, %{name: name, game: game, status: :joining, balance: @initial_balance, cards: []}}
   end
 
   def balance(name) do

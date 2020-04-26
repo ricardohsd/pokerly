@@ -1,6 +1,8 @@
 defmodule Pokerly.Game do
   use GenServer
 
+  alias Pokerly.PlayerSupervisor
+
   defp encode(name) do
     name |> String.downcase() |> Base.encode64()
   end
@@ -21,8 +23,8 @@ defmodule Pokerly.Game do
     {:ok, %{name: name, players: []}}
   end
 
-  def players(name) do
-    via_tuple(name)
+  def players(game) do
+    via_tuple(game)
     |> GenServer.call(:players)
   end
 
@@ -38,8 +40,17 @@ defmodule Pokerly.Game do
   end
 
   def handle_call({:add_player, player}, _from, state) do
-    players = Enum.uniq(state[:players] ++ [player])
-    new_state = %{state | players: players}
-    {:reply, new_state, new_state}
+    cond do
+      Enum.member?(state[:players], player) ->
+        {:reply, state, state}
+
+      true ->
+        players = Enum.uniq(state[:players] ++ [player])
+        new_state = %{state | players: players}
+
+        PlayerSupervisor.create_player(player, state[:name])
+
+        {:reply, new_state, new_state}
+    end
   end
 end
