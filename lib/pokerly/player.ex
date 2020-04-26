@@ -3,43 +3,50 @@ defmodule Pokerly.Player do
 
   alias Pokerly.Card
 
-  @initial_balance 200
-  @max_amount_of_cards 3
+  @initial_balance String.to_integer(System.get_env("PLAYER_INITIAL_BALANCE") || "200")
   @statuses [:joining, :playing, :away, :quit]
 
+  defp encode(name) do
+    name |> String.downcase() |> Base.encode64()
+  end
+
   # ensure global name is normalized
-  def via_tuple(name), do: {:via, Registry, {Registry.Player, name |> Base.encode64()}}
+  def via_tuple(name), do: {:via, Registry, {Registry.Player, encode(name)}}
 
   def start_link(name) when is_binary(name) do
     GenServer.start_link(__MODULE__, name, name: via_tuple(name))
   end
 
   def exists?(name) do
-    Registry.lookup(Registry.Player, name |> Base.encode64())
+    Registry.lookup(Registry.Player, encode(name))
   end
 
   def init(name) do
     {:ok, %{name: name, status: :joining, balance: @initial_balance, cards: []}}
   end
 
-  def balance(pid) do
-    GenServer.call(pid, :balance)
+  def balance(name) do
+    via_tuple(name)
+    |> GenServer.call(:balance)
   end
 
-  def status(pid, status) do
-    GenServer.call(pid, {:status, status})
+  def status(name, status) do
+    via_tuple(name)
+    |> GenServer.call({:status, status})
   end
 
-  def bet(pid, value) when is_number(value) do
-    GenServer.call(pid, {:bet, value})
+  def bet(name, value) when is_number(value) do
+    via_tuple(name)
+    |> GenServer.call({:bet, value})
   end
 
-  def bet(pid, _) do
+  def bet(_, _) do
     :invalid_bet_value
   end
 
-  def receive_card(pid, %Card{color: _, rank: _} = card) do
-    GenServer.call(pid, {:receive_card, card})
+  def receive_card(name, %Card{color: _, rank: _} = card) do
+    via_tuple(name)
+    |> GenServer.call({:receive_card, card})
   end
 
   # Callbacks
@@ -75,23 +82,11 @@ defmodule Pokerly.Player do
 
   def handle_call({:receive_card, card}, _from, %{status: status} = state)
       when status == :playing do
-    with :ok <- can_receive_cards(state) do
-      {:reply, :ok, %{state | cards: state[:cards] ++ [card]}}
-    else
-      :error -> {:reply, :invalid_amount_of_cards, state}
-    end
+    {:reply, :ok, %{state | cards: state[:cards] ++ [card]}}
   end
 
   def handle_call({:receive_card, card}, _from, %{status: status} = state)
       when status != :playing do
     {:reply, {:invalid_status, status}, state}
-  end
-
-  defp can_receive_cards(state) do
-    if Enum.count(state[:cards]) >= @max_amount_of_cards do
-      :error
-    else
-      :ok
-    end
   end
 end

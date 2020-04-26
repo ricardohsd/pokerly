@@ -6,27 +6,29 @@ defmodule Pokerly.PlayerTest do
   alias Pokerly.Card
 
   setup do
-    {:ok, pid} = Player.start_link("JohnDoe")
-    :ok = Player.status(pid, :playing)
+    player_name = "JohnDoe"
+    {:ok, _pid} = Player.start_link(player_name)
+    :ok = Player.status(player_name, :playing)
 
-    {:ok, process: pid}
+    {:ok, name: player_name}
   end
 
   describe "init/1" do
     setup do
-      {:ok, pid} = Player.start_link("Mary")
+      player_name = "Mary"
+      {:ok, _pid} = Player.start_link(player_name)
 
-      {:ok, process: pid}
+      {:ok, name: player_name}
     end
 
-    test "initial balance is setup", %{process: pid} do
-      %{balance: balance} = Player.balance(pid)
+    test "initial balance is setup", %{name: name} do
+      %{balance: balance} = Player.balance(name)
 
       assert 200 == balance
     end
 
-    test "player's status is joining", %{process: pid} do
-      %{status: status} = Player.balance(pid)
+    test "player's status is joining", %{name: name} do
+      %{status: status} = Player.balance(name)
 
       assert :joining == status
     end
@@ -45,100 +47,91 @@ defmodule Pokerly.PlayerTest do
   end
 
   describe "status/1" do
-    test "accepts :joining as a valid status", %{process: pid} do
-      assert :ok == Player.status(pid, :joining)
+    test "accepts :joining as a valid status", %{name: name} do
+      assert :ok == Player.status(name, :joining)
     end
 
-    test "accepts :playing as a valid status", %{process: pid} do
-      assert :ok == Player.status(pid, :playing)
+    test "accepts :playing as a valid status", %{name: name} do
+      assert :ok == Player.status(name, :playing)
     end
 
-    test "accepts :away as a valid status", %{process: pid} do
-      assert :ok == Player.status(pid, :away)
+    test "accepts :away as a valid status", %{name: name} do
+      assert :ok == Player.status(name, :away)
     end
 
-    test "accepts :quit as a valid status", %{process: pid} do
-      assert :ok == Player.status(pid, :quit)
+    test "accepts :quit as a valid status", %{name: name} do
+      assert :ok == Player.status(name, :quit)
     end
 
-    test "doesn't accept an invalid status", %{process: pid} do
-      {:invalid_status, status} = Player.status(pid, :wrong_status)
+    test "doesn't accept an invalid status", %{name: name} do
+      {:invalid_status, status} = Player.status(name, :wrong_status)
 
       assert :wrong_status == status
     end
   end
 
   describe "bet/1" do
-    test "returns error when betting not a number", %{process: pid} do
-      error = Player.bet(pid, "notanumber")
+    test "returns error when betting not a number", %{name: name} do
+      error = Player.bet(name, "notanumber")
       assert :invalid_bet_value == error
     end
 
-    test "returns error when player has 'joining' status", %{process: pid} do
-      :ok = Player.status(pid, :joining)
-      {error, :joining} = Player.bet(pid, 10)
+    test "returns error when player has 'joining' status", %{name: name} do
+      :ok = Player.status(name, :joining)
+      {error, :joining} = Player.bet(name, 10)
       assert :invalid_status == error
     end
 
-    test "returns error when player has 'away' status", %{process: pid} do
-      :ok = Player.status(pid, :away)
-      {error, :away} = Player.bet(pid, 10)
+    test "returns error when player has 'away' status", %{name: name} do
+      :ok = Player.status(name, :away)
+      {error, :away} = Player.bet(name, 10)
       assert :invalid_status == error
     end
 
-    test "returns error when player has 'quit' status", %{process: pid} do
-      :ok = Player.status(pid, :quit)
-      {error, :quit} = Player.bet(pid, 10)
+    test "returns error when player has 'quit' status", %{name: name} do
+      :ok = Player.status(name, :quit)
+      {error, :quit} = Player.bet(name, 10)
       assert :invalid_status == error
     end
 
-    test "deduct bet from balance", %{process: pid} do
-      :ok = Player.bet(pid, 100)
-      %{balance: balance} = Player.balance(pid)
+    test "deduct bet from balance", %{name: name} do
+      :ok = Player.bet(name, 100)
+      %{balance: balance} = Player.balance(name)
       assert 100 == balance
     end
 
-    test "balance can't be negative", %{process: pid} do
-      error = Player.bet(pid, 201)
+    test "balance can't be negative", %{name: name} do
+      error = Player.bet(name, 201)
       assert :not_enough_funds == error
     end
   end
 
   describe "receive_card/1" do
-    test "receives a card", %{process: pid} do
+    test "receives a card", %{name: name} do
       card = %Card{color: "♠", rank: "K"}
 
-      :ok = Player.receive_card(pid, card)
+      :ok = Player.receive_card(name, card)
 
-      %{cards: cards} = Player.balance(pid)
+      %{cards: cards} = Player.balance(name)
 
       assert [card] == cards
     end
 
-    test "returns error when receiving more than 3 cards", %{process: pid} do
-      :ok = Player.receive_card(pid, %Card{color: "♠", rank: "K"})
-      :ok = Player.receive_card(pid, %Card{color: "♠", rank: "Q"})
-      :ok = Player.receive_card(pid, %Card{color: "♠", rank: "J"})
-      error = Player.receive_card(pid, %Card{color: "♠", rank: "10"})
-
-      assert :invalid_amount_of_cards == error
-    end
-
-    test "returns error when player has 'joining' status", %{process: pid} do
-      :ok = Player.status(pid, :joining)
-      {error, :joining} = Player.receive_card(pid, %Card{color: "♠", rank: "K"})
+    test "returns error when player has 'joining' status", %{name: name} do
+      :ok = Player.status(name, :joining)
+      {error, :joining} = Player.receive_card(name, %Card{color: "♠", rank: "K"})
       assert :invalid_status == error
     end
 
-    test "returns error when player has 'away' status", %{process: pid} do
-      :ok = Player.status(pid, :away)
-      {error, :away} = Player.receive_card(pid, %Card{color: "♠", rank: "K"})
+    test "returns error when player has 'away' status", %{name: name} do
+      :ok = Player.status(name, :away)
+      {error, :away} = Player.receive_card(name, %Card{color: "♠", rank: "K"})
       assert :invalid_status == error
     end
 
-    test "returns error when player has 'quit' status", %{process: pid} do
-      :ok = Player.status(pid, :quit)
-      {error, :quit} = Player.receive_card(pid, %Card{color: "♠", rank: "K"})
+    test "returns error when player has 'quit' status", %{name: name} do
+      :ok = Player.status(name, :quit)
+      {error, :quit} = Player.receive_card(name, %Card{color: "♠", rank: "K"})
       assert :invalid_status == error
     end
   end
