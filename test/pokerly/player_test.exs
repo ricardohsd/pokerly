@@ -7,7 +7,7 @@ defmodule Pokerly.PlayerTest do
 
   setup do
     player_name = "JohnDoe"
-    {:ok, _pid} = Player.start_link(player_name)
+    {:ok, _pid} = Player.start_link(name: player_name)
     :ok = Player.status(player_name, :playing)
 
     {:ok, name: player_name}
@@ -16,7 +16,7 @@ defmodule Pokerly.PlayerTest do
   describe "init/1" do
     setup do
       player_name = "Mary"
-      {:ok, _pid} = Player.start_link(player_name)
+      {:ok, _pid} = Player.start_link(name: player_name)
 
       {:ok, name: player_name}
     end

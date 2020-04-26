@@ -9,7 +9,9 @@ defmodule Pokerly.Application do
     children = [
       # Starts a worker by calling: Pokerly.Worker.start_link(arg)
       # {Pokerly.Worker, arg}
-      {Registry, keys: :unique, name: Registry.Player}
+      {Registry, keys: :unique, name: Registry.Game},
+      {Registry, keys: :unique, name: Registry.Player},
+      Pokerly.GameSupervisor
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

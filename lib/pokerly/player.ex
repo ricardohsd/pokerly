@@ -13,7 +13,12 @@ defmodule Pokerly.Player do
   # ensure global name is normalized
   def via_tuple(name), do: {:via, Registry, {Registry.Player, encode(name)}}
 
-  def start_link(name) when is_binary(name) do
+  def pid_of(name) do
+    via_tuple(name)
+    |> GenServer.whereis()
+  end
+
+  def start_link([name: name] = _opts) when is_binary(name) do
     GenServer.start_link(__MODULE__, name, name: via_tuple(name))
   end
 
@@ -76,7 +81,7 @@ defmodule Pokerly.Player do
     end
   end
 
-  def handle_call({:bet, value}, _from, %{status: status} = state) when status != :playing do
+  def handle_call({:bet, _value}, _from, %{status: status} = state) when status != :playing do
     {:reply, {:invalid_status, status}, state}
   end
 
@@ -85,7 +90,7 @@ defmodule Pokerly.Player do
     {:reply, :ok, %{state | cards: state[:cards] ++ [card]}}
   end
 
-  def handle_call({:receive_card, card}, _from, %{status: status} = state)
+  def handle_call({:receive_card, _card}, _from, %{status: status} = state)
       when status != :playing do
     {:reply, {:invalid_status, status}, state}
   end
