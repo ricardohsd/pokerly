@@ -1,4 +1,6 @@
 defmodule Pokerly.Deck do
+  alias Pokerly.Card
+
   @color_values %{
     "♠" => "spades",
     "♥" => "hearts",
@@ -38,7 +40,7 @@ defmodule Pokerly.Deck do
     colors()
     |> Enum.flat_map(fn x ->
       Enum.map(ranks(), fn y ->
-        %{"color" => x, "rank" => y}
+        %Card{color: x, rank: y}
       end)
     end)
     |> Enum.shuffle()
@@ -47,7 +49,7 @@ defmodule Pokerly.Deck do
   def shortened() do
     shuffle()
     |> Enum.map(fn x ->
-      x["rank"] <> x["color"]
+      x.rank <> x.color
     end)
   end
 end

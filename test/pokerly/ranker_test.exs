@@ -2,6 +2,8 @@ defmodule Pokerly.RankerTest do
   use ExUnit.Case
   doctest Pokerly.Ranker
 
+  alias Pokerly.Card
+
   use Pokerly.Fixtures, [:hands]
 
   describe "weights/1" do
@@ -160,27 +162,27 @@ defmodule Pokerly.RankerTest do
 
     test "equal high hands" do
       first_hand = [
-        %{"color" => "♦", "rank" => "7"},
-        %{"color" => "♣", "rank" => "7"},
-        %{"color" => "♠", "rank" => "10"},
-        %{"color" => "♣", "rank" => "8"},
-        %{"color" => "♠", "rank" => "9"}
+        %Card{color: "♦", rank: "7"},
+        %Card{color: "♣", rank: "7"},
+        %Card{color: "♠", rank: "10"},
+        %Card{color: "♣", rank: "8"},
+        %Card{color: "♠", rank: "9"}
       ]
 
       second_hand = [
-        %{"color" => "♠", "rank" => "7"},
-        %{"color" => "♥", "rank" => "7"},
-        %{"color" => "♥", "rank" => "10"},
-        %{"color" => "♠", "rank" => "8"},
-        %{"color" => "♣", "rank" => "9"}
+        %Card{color: "♠", rank: "7"},
+        %Card{color: "♥", rank: "7"},
+        %Card{color: "♥", rank: "10"},
+        %Card{color: "♠", rank: "8"},
+        %Card{color: "♣", rank: "9"}
       ]
 
       third_hand = [
-        %{"color" => "♣", "rank" => "6"},
-        %{"color" => "♦", "rank" => "6"},
-        %{"color" => "♠", "rank" => "8"},
-        %{"color" => "♣", "rank" => "9"},
-        %{"color" => "♦", "rank" => "5"}
+        %Card{color: "♣", rank: "6"},
+        %Card{color: "♦", rank: "6"},
+        %Card{color: "♠", rank: "8"},
+        %Card{color: "♣", rank: "9"},
+        %Card{color: "♦", rank: "5"}
       ]
 
       hands = [first_hand, second_hand, third_hand]
