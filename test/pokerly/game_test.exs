@@ -5,9 +5,11 @@ defmodule Pokerly.GameTest do
   alias Pokerly.Game
   alias Pokerly.Player
 
+  @owner "Steve"
+
   setup do
     name = "Game1"
-    {:ok, _pid} = Game.start_link(name: name)
+    {:ok, _pid} = Game.start_link(name: name, owner: @owner)
 
     {:ok, name: name}
   end
@@ -16,7 +18,7 @@ defmodule Pokerly.GameTest do
     test "return current player's names", %{name: name} do
       players = Game.players(name)
 
-      assert [] == players
+      assert [@owner] == players
     end
   end
 
@@ -25,10 +27,10 @@ defmodule Pokerly.GameTest do
       assert [] == Player.exists?("Martin")
 
       players = Game.players(game)
-      assert [] == players
+      assert [@owner] == players
 
       Game.add_player(game, "Martin")
-      assert ["Martin"] == Game.players(game)
+      assert [@owner, "Martin"] == Game.players(game)
 
       assert nil != Player.exists?("Martin")
     end
@@ -38,7 +40,7 @@ defmodule Pokerly.GameTest do
       Game.add_player(game, "Elise")
       Game.add_player(game, "Robert")
 
-      assert ["Robert", "Elise"] == Game.players(game)
+      assert [@owner, "Robert", "Elise"] == Game.players(game)
     end
   end
 end

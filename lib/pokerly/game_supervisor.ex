@@ -7,8 +7,8 @@ defmodule Pokerly.GameSupervisor do
 
   def init(:ok), do: DynamicSupervisor.init(strategy: :one_for_one)
 
-  def start_game(name) do
-    spec = {Game, name: name}
+  def start_game(name, owner) do
+    spec = {Game, name: name, owner: owner}
     DynamicSupervisor.start_child(__MODULE__, spec)
   end
 

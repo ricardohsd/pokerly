@@ -15,12 +15,21 @@ defmodule Pokerly.Game do
     |> GenServer.whereis()
   end
 
-  def start_link([name: name] = _opts) do
-    GenServer.start_link(__MODULE__, [name: name], name: via_tuple(name))
+  def start_link([name: name, owner: _owner] = opts) do
+    GenServer.start_link(__MODULE__, opts, name: via_tuple(name))
   end
 
-  def init([name: name] = _opts) do
-    {:ok, %{name: name, players: []}}
+  def start_link([name: name] = opts) do
+    GenServer.start_link(__MODULE__, opts, name: via_tuple(name))
+  end
+
+  def init([name: game, owner: player] = _opts) do
+    PlayerSupervisor.create_player(player, game)
+    {:ok, %{name: game, players: [player]}}
+  end
+
+  def init([name: game] = _opts) do
+    {:ok, %{name: game, players: []}}
   end
 
   def players(game) do
