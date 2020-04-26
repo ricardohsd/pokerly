@@ -3,17 +3,7 @@ defmodule Pokerly.Game do
 
   alias Pokerly.PlayerSupervisor
 
-  defp encode(name) do
-    name |> String.downcase() |> Base.encode64()
-  end
-
-  # ensure global name is normalized
-  def via_tuple(name), do: {:via, Registry, {Registry.Game, encode(name)}}
-
-  def pid_of(name) do
-    via_tuple(name)
-    |> GenServer.whereis()
-  end
+  use Pokerly.RegistryOf, Registry.Game
 
   def start_link([name: name, owner: _owner] = opts) do
     GenServer.start_link(__MODULE__, opts, name: via_tuple(name))

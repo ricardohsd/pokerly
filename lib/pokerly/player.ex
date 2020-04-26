@@ -3,27 +3,13 @@ defmodule Pokerly.Player do
 
   alias Pokerly.Card
 
+  use Pokerly.RegistryOf, Registry.Player
+
   @initial_balance String.to_integer(System.get_env("PLAYER_INITIAL_BALANCE") || "200")
   @statuses [:joining, :playing, :away, :quit]
 
-  defp encode(name) do
-    name |> String.downcase() |> Base.encode64()
-  end
-
-  # ensure global name is normalized
-  def via_tuple(name), do: {:via, Registry, {Registry.Player, encode(name)}}
-
-  def pid_of(name) do
-    via_tuple(name)
-    |> GenServer.whereis()
-  end
-
   def start_link([name: name, game: _game] = opts) when is_binary(name) do
     GenServer.start_link(__MODULE__, opts, name: via_tuple(name))
-  end
-
-  def exists?(name) do
-    Registry.lookup(Registry.Player, encode(name))
   end
 
   def init([name: name, game: game] = _opts) do
