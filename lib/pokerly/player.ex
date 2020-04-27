@@ -3,26 +3,17 @@ defmodule Pokerly.Player do
 
   alias Pokerly.Card
 
+  use Pokerly.RegistryOf, Registry.Player
+
   @initial_balance String.to_integer(System.get_env("PLAYER_INITIAL_BALANCE") || "200")
   @statuses [:joining, :playing, :away, :quit]
 
-  defp encode(name) do
-    name |> String.downcase() |> Base.encode64()
+  def start_link([name: name, game: _game] = opts) when is_binary(name) do
+    GenServer.start_link(__MODULE__, opts, name: via_tuple(name))
   end
 
-  # ensure global name is normalized
-  def via_tuple(name), do: {:via, Registry, {Registry.Player, encode(name)}}
-
-  def start_link(name) when is_binary(name) do
-    GenServer.start_link(__MODULE__, name, name: via_tuple(name))
-  end
-
-  def exists?(name) do
-    Registry.lookup(Registry.Player, encode(name))
-  end
-
-  def init(name) do
-    {:ok, %{name: name, status: :joining, balance: @initial_balance, cards: []}}
+  def init([name: name, game: game] = _opts) do
+    {:ok, %{name: name, game: game, status: :joining, balance: @initial_balance, cards: []}}
   end
 
   def balance(name) do
@@ -76,7 +67,7 @@ defmodule Pokerly.Player do
     end
   end
 
-  def handle_call({:bet, value}, _from, %{status: status} = state) when status != :playing do
+  def handle_call({:bet, _value}, _from, %{status: status} = state) when status != :playing do
     {:reply, {:invalid_status, status}, state}
   end
 
@@ -85,7 +76,7 @@ defmodule Pokerly.Player do
     {:reply, :ok, %{state | cards: state[:cards] ++ [card]}}
   end
 
-  def handle_call({:receive_card, card}, _from, %{status: status} = state)
+  def handle_call({:receive_card, _card}, _from, %{status: status} = state)
       when status != :playing do
     {:reply, {:invalid_status, status}, state}
   end

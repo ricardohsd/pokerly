@@ -2,12 +2,14 @@ defmodule Pokerly.PlayerTest do
   use ExUnit.Case
   doctest Pokerly.Player
 
+  alias Pokerly.Game
   alias Pokerly.Player
   alias Pokerly.Card
 
   setup do
+    {:ok, _pid} = Game.start_link(name: "game1")
     player_name = "JohnDoe"
-    {:ok, _pid} = Player.start_link(player_name)
+    {:ok, _pid} = Player.start_link(name: player_name, game: "game1")
     :ok = Player.status(player_name, :playing)
 
     {:ok, name: player_name}
@@ -15,8 +17,9 @@ defmodule Pokerly.PlayerTest do
 
   describe "init/1" do
     setup do
+      {:ok, _pid} = Game.start_link(name: "game2")
       player_name = "Mary"
-      {:ok, _pid} = Player.start_link(player_name)
+      {:ok, _pid} = Player.start_link(name: player_name, game: "game2")
 
       {:ok, name: player_name}
     end
