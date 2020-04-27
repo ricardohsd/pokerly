@@ -1,5 +1,5 @@
 defmodule Engine.Fixtures do
-  alias Engine.Card
+  alias Engine.Data.Card
 
   defmacro __using__(fixtures) when is_list(fixtures) do
     for fixture <- fixtures, is_atom(fixture), do: apply(__MODULE__, fixture, [])

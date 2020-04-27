@@ -2,7 +2,7 @@ defmodule Engine.Player do
   use GenServer
   use Engine.RegistryOf, Registry.Player
 
-  alias Engine.Card
+  alias Engine.Data.Card
 
   require Logger
 

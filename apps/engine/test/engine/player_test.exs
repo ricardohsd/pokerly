@@ -4,7 +4,7 @@ defmodule Engine.PlayerTest do
 
   alias Engine.Game
   alias Engine.Player
-  alias Engine.Card
+  alias Engine.Data.Card
 
   setup do
     {:ok, _pid} = Game.start_link(name: "game1")

@@ -1,5 +1,5 @@
 defmodule Engine.Ranker do
-  alias Engine.Card
+  alias Engine.Data.Card
 
   @hands %{
     straight_flush: 9,

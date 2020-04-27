@@ -2,7 +2,7 @@ defmodule Engine.RankerTest do
   use ExUnit.Case
   doctest Engine.Ranker
 
-  alias Engine.Card
+  alias Engine.Data.Card
 
   use Engine.Fixtures, [:hands]
 

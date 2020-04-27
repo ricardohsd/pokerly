@@ -1,5 +1,5 @@
 defmodule Engine.Deck do
-  alias Engine.Card
+  alias Engine.Data.Card
 
   @color_values %{
     "♠" => "spades",
