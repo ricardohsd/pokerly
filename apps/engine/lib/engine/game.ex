@@ -1,9 +1,9 @@
-defmodule Pokerly.Game do
+defmodule Engine.Game do
   use GenServer
 
-  alias Pokerly.PlayerSupervisor
+  alias Engine.PlayerSupervisor
 
-  use Pokerly.RegistryOf, Registry.Game
+  use Engine.RegistryOf, Registry.Game
 
   def start_link([name: name, owner: _owner] = opts) do
     GenServer.start_link(__MODULE__, opts, name: via_tuple(name))

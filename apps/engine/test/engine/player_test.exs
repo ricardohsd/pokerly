@@ -1,10 +1,10 @@
-defmodule Pokerly.PlayerTest do
+defmodule Engine.PlayerTest do
   use ExUnit.Case
-  doctest Pokerly.Player
+  doctest Engine.Player
 
-  alias Pokerly.Game
-  alias Pokerly.Player
-  alias Pokerly.Card
+  alias Engine.Game
+  alias Engine.Player
+  alias Engine.Card
 
   setup do
     {:ok, _pid} = Game.start_link(name: "game1")

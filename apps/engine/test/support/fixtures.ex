@@ -1,5 +1,5 @@
-defmodule Pokerly.Fixtures do
-  alias Pokerly.Card
+defmodule Engine.Fixtures do
+  alias Engine.Card
 
   defmacro __using__(fixtures) when is_list(fixtures) do
     for fixture <- fixtures, is_atom(fixture), do: apply(__MODULE__, fixture, [])

@@ -1,4 +1,4 @@
-defmodule Pokerly.Application do
+defmodule Engine.Application do
   # See https://hexdocs.pm/elixir/Application.html
   # for more information on OTP Applications
   @moduledoc false
@@ -7,17 +7,17 @@ defmodule Pokerly.Application do
 
   def start(_type, _args) do
     children = [
-      # Starts a worker by calling: Pokerly.Worker.start_link(arg)
-      # {Pokerly.Worker, arg}
+      # Starts a worker by calling: Engine.Worker.start_link(arg)
+      # {Engine.Worker, arg}
       {Registry, keys: :unique, name: Registry.Game},
       {Registry, keys: :unique, name: Registry.Player},
-      Pokerly.GameSupervisor,
-      Pokerly.PlayerSupervisor
+      Engine.GameSupervisor,
+      Engine.PlayerSupervisor
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
     # for other strategies and supported options
-    opts = [strategy: :one_for_one, name: Pokerly.Supervisor]
+    opts = [strategy: :one_for_one, name: Engine.Supervisor]
     Supervisor.start_link(children, opts)
   end
 end

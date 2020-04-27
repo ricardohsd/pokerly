@@ -1,9 +1,9 @@
-defmodule Pokerly.GameTest do
+defmodule Engine.GameTest do
   use ExUnit.Case
-  doctest Pokerly.Game
+  doctest Engine.Game
 
-  alias Pokerly.Game
-  alias Pokerly.Player
+  alias Engine.Game
+  alias Engine.Player
 
   @owner "Steve"
 

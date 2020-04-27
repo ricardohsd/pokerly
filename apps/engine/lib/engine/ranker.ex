@@ -1,5 +1,5 @@
-defmodule Pokerly.Ranker do
-  alias Pokerly.Card
+defmodule Engine.Ranker do
+  alias Engine.Card
 
   @hands %{
     straight_flush: 9,
@@ -169,6 +169,6 @@ defmodule Pokerly.Ranker do
   end
 
   defp hand_weight(%Card{color: color, rank: rank}) do
-    {Pokerly.Deck.rank_of(rank), color}
+    {Engine.Deck.rank_of(rank), color}
   end
 end

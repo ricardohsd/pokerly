@@ -1,5 +1,5 @@
-defmodule Pokerly.Deck do
-  alias Pokerly.Card
+defmodule Engine.Deck do
+  alias Engine.Card
 
   @color_values %{
     "♠" => "spades",

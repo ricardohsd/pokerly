@@ -1,6 +1,6 @@
-defmodule Pokerly do
+defmodule Engine do
   @moduledoc """
-  Documentation for `Pokerly`.
+  Documentation for `Engine`.
   """
 
   @doc """
@@ -8,7 +8,7 @@ defmodule Pokerly do
 
   ## Examples
 
-      iex> Pokerly.hello()
+      iex> Engine.hello()
       :world
 
   """

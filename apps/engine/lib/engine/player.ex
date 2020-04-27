@@ -1,9 +1,9 @@
-defmodule Pokerly.Player do
+defmodule Engine.Player do
   use GenServer
 
-  alias Pokerly.Card
+  alias Engine.Card
 
-  use Pokerly.RegistryOf, Registry.Player
+  use Engine.RegistryOf, Registry.Player
 
   @initial_balance String.to_integer(System.get_env("PLAYER_INITIAL_BALANCE") || "200")
   @statuses [:joining, :playing, :away, :quit]

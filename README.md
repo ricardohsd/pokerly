@@ -1,21 +1,5 @@
 # Pokerly
 
-**TODO: Add description**
-
-## Installation
-
-If [available in Hex](https://hex.pm/docs/publish), the package can be installed
-by adding `pokerly` to your list of dependencies in `mix.exs`:
-
-```elixir
-def deps do
-  [
-    {:pokerly, "~> 0.1.0"}
-  ]
-end
-```
-
-Documentation can be generated with [ExDoc](https://github.com/elixir-lang/ex_doc)
-and published on [HexDocs](https://hexdocs.pm). Once published, the docs can
-be found at [https://hexdocs.pm/pokerly](https://hexdocs.pm/pokerly).
-
+The Umbrella project consists in two main applications:
+- Engine: Responsible for create a game, player and control the rounds.
+- Web: It is a Phoenix project that depends on the Engine and will handle User actions.
