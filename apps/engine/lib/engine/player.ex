@@ -1,18 +1,20 @@
 defmodule Engine.Player do
   use GenServer
+  use Engine.RegistryOf, Registry.Player
 
   alias Engine.Card
 
-  use Engine.RegistryOf, Registry.Player
+  require Logger
 
   @initial_balance String.to_integer(System.get_env("PLAYER_INITIAL_BALANCE") || "200")
-  @statuses [:joining, :playing, :away, :quit]
+  @statuses [:joining, :on_bench, :playing, :away, :quit]
 
   def start_link([name: name, game: _game] = opts) when is_binary(name) do
     GenServer.start_link(__MODULE__, opts, name: via_tuple(name))
   end
 
   def init([name: name, game: game] = _opts) do
+    ticker()
     {:ok, %{name: name, game: game, status: :joining, balance: @initial_balance, cards: []}}
   end
 
@@ -47,6 +49,7 @@ defmodule Engine.Player do
   end
 
   def handle_call({:status, new_status}, _from, state) when new_status in @statuses do
+    Logger.debug("Moving #{state[:name]} to #{new_status}")
     {:reply, :ok, %{state | status: new_status}}
   end
 
@@ -79,5 +82,24 @@ defmodule Engine.Player do
   def handle_call({:receive_card, _card}, _from, %{status: status} = state)
       when status != :playing do
     {:reply, {:invalid_status, status}, state}
+  end
+
+  def handle_info(:tick, state) do
+    do_tick(state[:status], state)
+    ticker()
+    {:noreply, state}
+  end
+
+  defp do_tick(:playing, state) do
+    IO.puts("Player #{state[:name]} must execute an action")
+    :must_execute_an_action
+  end
+
+  defp do_tick(_, _) do
+    :nothing_to_do
+  end
+
+  defp ticker() do
+    Process.send_after(self(), :tick, 2 * 1000)
   end
 end

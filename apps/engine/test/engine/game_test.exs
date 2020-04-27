@@ -9,7 +9,7 @@ defmodule Engine.GameTest do
 
   setup do
     name = "Game1"
-    {:ok, _pid} = Game.start_link(name: name, owner: @owner)
+    {:ok, _pid} = Game.start_link(name: name, owner: @owner, ticker_interval: 10 * 1000)
 
     {:ok, name: name}
   end
@@ -30,17 +30,12 @@ defmodule Engine.GameTest do
       assert [@owner] == players
 
       Game.add_player(game, "Martin")
-      assert [@owner, "Martin"] == Game.players(game)
+      players = Game.players(game)
+
+      assert Enum.member?(players, @owner)
+      assert Enum.member?(players, "Martin")
 
       assert nil != Player.exists?("Martin")
-    end
-
-    test "doesn't add already existing player", %{name: game} do
-      Game.add_player(game, "Robert")
-      Game.add_player(game, "Elise")
-      Game.add_player(game, "Robert")
-
-      assert [@owner, "Robert", "Elise"] == Game.players(game)
     end
   end
 end
